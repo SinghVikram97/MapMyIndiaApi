@@ -23,24 +23,27 @@ app.get("/map_get", (req, res) => {
       let size = Object.keys(data.routes).length;
       let mainArray = [];
       for (let i = 0; i < size; i++) {
-        let tempArray = [];
+        // mainArray.push(data.routes[i].legs[0].steps[j]);
         for (let j = 0; j < data.routes[i].legs[0].steps.length; j++) {
-          tempArray.push(data.routes[i].legs[0].steps[i].maneuver.location);
+          mainArray.push(
+            data.routes[i].legs[0].steps[j].intersections[0].location
+          );
         }
-        mainArray.push(tempArray);
       }
-      // res.send(mainArray);
-      console.log(mainArray);
-      let options = {
-        args: mainArray
-      };
-      console.log(options.args);
-      PythonShell.run("model.py", options, (err, result) => {
-        if (err) {
-          throw err;
-        }
-        res.send(result);
-      });
+      // // res.send(mainArray);
+      // console.log(mainArray);
+      // let options = {
+      //   args: mainArray
+      // };
+      // console.log(options.args);
+      // PythonShell.run("model.py", options, (err, result) => {
+      //   if (err) {
+      //     throw err;
+      //   }
+      //   res.send(result);
+      // });
+
+      res.send(mainArray);
     })
     .catch(err => {
       res.send(err);
