@@ -16,16 +16,23 @@ app.get("/", (req, res) => {
 });
 app.get("/map_get", (req, res) => {
   fetch(
-    `https://apis.mapmyindia.com/advancedmaps/v1/fxs1vleongo2371f3mcb4jsjn21ii73x/route_adv/driving/77.2333,28.6665;77.3178,28.4089?steps=true`
+    `https://apis.mapmyindia.com/advancedmaps/v1/fxs1vleongo2371f3mcb4jsjn21ii73x/route_adv/driving/77.2333,28.6665;77.3178,28.4089?steps=true&alternatives=true`
   )
     .then(res => res.json())
     .then(data => {
-      let latLongArr = [];
-      for (let i = 0; i < data.routes[0].legs[0].steps.length; i++) {
-        latLongArr.push(data.routes[0].legs[0].steps[i].maneuver.location);
+      let size = Object.keys(data.routes).length;
+      let mainArray = [];
+      for (let i = 0; i < size; i++) {
+        let tempArray = [];
+        for (let j = 0; j < data.routes[i].legs[0].steps.length; j++) {
+          tempArray.push(data.routes[i].legs[0].steps[i].maneuver.location);
+        }
+        mainArray.push(tempArray);
       }
+      // res.send(mainArray);
+      console.log(mainArray);
       let options = {
-        args: { latLongArr: latLongArr }
+        args: mainArray
       };
       console.log(options.args);
       PythonShell.run("model.py", options, (err, result) => {
