@@ -22,13 +22,16 @@ app.get("/map_get", (req, res) => {
     .then(data => {
       let size = Object.keys(data.routes).length;
       let mainArray = [];
+
       for (let i = 0; i < size; i++) {
         // mainArray.push(data.routes[i].legs[0].steps[j]);
+        let tempArray = [];
         for (let j = 0; j < data.routes[i].legs[0].steps.length; j++) {
-          mainArray.push(
+          tempArray.push(
             data.routes[i].legs[0].steps[j].intersections[0].location
           );
         }
+        mainArray.push(tempArray);
       }
       // // res.send(mainArray);
       // console.log(mainArray);
