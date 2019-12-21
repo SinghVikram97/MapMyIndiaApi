@@ -4,6 +4,7 @@ const fetch = require("node-fetch");
 const geocoder = require("geocoder");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const { PythonShell } = require("python-shell");
 
 app.use(cors());
 
@@ -13,13 +14,37 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get("/", (req, res) => {
   res.send("Works");
 });
-
+app.get("/map_get", (req, res) => {
+  fetch(
+    `https://apis.mapmyindia.com/advancedmaps/v1/fxs1vleongo2371f3mcb4jsjn21ii73x/route_adv/driving/77.2333,28.6665;77.3178,28.4089?steps=true`
+  )
+    .then(res => res.json())
+    .then(data => {
+      let latLongArr = [];
+      for (let i = 0; i < data.routes[0].legs[0].steps.length; i++) {
+        latLongArr.push(data.routes[0].legs[0].steps[i].maneuver.location);
+      }
+      let options = {
+        args: { latLongArr: latLongArr }
+      };
+      console.log(options.args);
+      PythonShell.run("model.py", options, (err, result) => {
+        if (err) {
+          throw err;
+        }
+        res.send(result);
+      });
+    })
+    .catch(err => {
+      res.send(err);
+    });
+});
 app.post("/map", (req, res) => {
   const { start_lat, start_long, end_lat, end_long } = req.body;
   console.log(start_lat);
-  res.send("done");
+
   fetch(
-    `https://apis.mapmyindia.com/advancedmaps/v1/fxs1vleongo2371f3mcb4jsjn21ii73x/route_adv/driving/${start_long},${start_lat};${end_lat},${end_long}?`
+    `https://apis.mapmyindia.com/advancedmaps/v1/fxs1vleongo2371f3mcb4jsjn21ii73x/route_adv/driving/${start_long},${start_lat};${end_lat},${end_long}?steps=true`
   )
     .then(res => res.json())
     .then(data => {
