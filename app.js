@@ -33,20 +33,16 @@ app.get("/map_get", (req, res) => {
         }
         mainArray.push(tempArray);
       }
-      // // res.send(mainArray);
-      // console.log(mainArray);
-      // let options = {
-      //   args: mainArray
-      // };
-      // console.log(options.args);
-      // PythonShell.run("model.py", options, (err, result) => {
-      //   if (err) {
-      //     throw err;
-      //   }
-      //   res.send(result);
-      // });
 
-      res.send(mainArray);
+      let options = {
+        args: mainArray
+      };
+      PythonShell.run("model.py", options, (err, result) => {
+        if (err) {
+          throw err;
+        }
+        res.send(result);
+      });
     })
     .catch(err => {
       res.send(err);
