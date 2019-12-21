@@ -18,16 +18,16 @@ app.post("/map", (req, res) => {
   const { start_lat, start_long, end_lat, end_long } = req.body;
   console.log(start_lat);
   res.send("done");
-  // fetch(
-  //   `https://apis.mapmyindia.com/advancedmaps/v1/fxs1vleongo2371f3mcb4jsjn21ii73x/route_adv/driving/${start_long},${start_lat};${start_lat},${start_long}?`
-  // )
-  //   .then(res => res.json())
-  //   .then(data => {
-  //     res.send(data);
-  //   })
-  //   .catch(err => {
-  //     res.send(err);
-  //   });
+  fetch(
+    `https://apis.mapmyindia.com/advancedmaps/v1/fxs1vleongo2371f3mcb4jsjn21ii73x/route_adv/driving/${start_long},${start_lat};${end_lat},${end_long}?`
+  )
+    .then(res => res.json())
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.send(err);
+    });
 });
 
 app.post("/geocode", (req, res) => {
